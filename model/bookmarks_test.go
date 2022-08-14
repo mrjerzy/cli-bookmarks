@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"errors"
@@ -29,18 +29,16 @@ func TestLoad(t *testing.T) {
 		},
 		{
 			name:  "read bookmarks",
-			input: `{"bookmarks":[{"name": "a","path": "b","invocations": 3},{"name": "c","path": "d","invocations": 4}]}`,
+			input: `{"bookmarks":[{"name": "a","path": "b"},{"name": "c","path": "d"}]}`,
 			bookmarks: Bookmarks{
 				[]Bookmark{
 					{
-						Name:        "a",
-						Path:        "b",
-						Invocations: 3,
+						Name: "a",
+						Path: "b",
 					},
 					{
-						Name:        "c",
-						Path:        "d",
-						Invocations: 4,
+						Name: "c",
+						Path: "d",
 					},
 				},
 			},
@@ -82,16 +80,14 @@ func TestAdd(t *testing.T) {
 			name:            "add new element should add element",
 			beforeBookmarks: Bookmarks{},
 			newBookmark: Bookmark{
-				Name:        "a",
-				Path:        "b",
-				Invocations: 0,
+				Name: "a",
+				Path: "b",
 			},
 			afterBookmarks: Bookmarks{
 				[]Bookmark{
 					{
-						Name:        "a",
-						Path:        "b",
-						Invocations: 0,
+						Name: "a",
+						Path: "b",
 					},
 				},
 			},
@@ -102,23 +98,20 @@ func TestAdd(t *testing.T) {
 			beforeBookmarks: Bookmarks{
 				[]Bookmark{
 					{
-						Name:        "a",
-						Path:        "b",
-						Invocations: 0,
+						Name: "a",
+						Path: "b",
 					},
 				},
 			},
 			newBookmark: Bookmark{
-				Name:        "a",
-				Path:        "b",
-				Invocations: 0,
+				Name: "a",
+				Path: "b",
 			},
 			afterBookmarks: Bookmarks{
 				[]Bookmark{
 					{
-						Name:        "a",
-						Path:        "b",
-						Invocations: 0,
+						Name: "a",
+						Path: "b",
 					},
 				},
 			},
@@ -129,23 +122,20 @@ func TestAdd(t *testing.T) {
 			beforeBookmarks: Bookmarks{
 				[]Bookmark{
 					{
-						Name:        "A",
-						Path:        "b",
-						Invocations: 0,
+						Name: "A",
+						Path: "b",
 					},
 				},
 			},
 			newBookmark: Bookmark{
-				Name:        "a",
-				Path:        "b",
-				Invocations: 0,
+				Name: "a",
+				Path: "b",
 			},
 			afterBookmarks: Bookmarks{
 				[]Bookmark{
 					{
-						Name:        "A",
-						Path:        "b",
-						Invocations: 0,
+						Name: "A",
+						Path: "b",
 					},
 				},
 			},
@@ -187,13 +177,12 @@ func TestSave(t *testing.T) {
 			bookmarks: Bookmarks{
 				[]Bookmark{
 					{
-						Name:        "a",
-						Path:        "b",
-						Invocations: 3,
+						Name: "a",
+						Path: "b",
 					},
 				},
 			},
-			output: `{"bookmarks": [{"name":"a", "path":"b", "invocations":3}]}`,
+			output: `{"bookmarks": [{"name":"a", "path":"b"}]}`,
 			err:    nil,
 		},
 		{
@@ -201,18 +190,16 @@ func TestSave(t *testing.T) {
 			bookmarks: Bookmarks{
 				[]Bookmark{
 					{
-						Name:        "a",
-						Path:        "b",
-						Invocations: 3,
+						Name: "a",
+						Path: "b",
 					},
 					{
-						Name:        "b",
-						Path:        "c",
-						Invocations: 4,
+						Name: "b",
+						Path: "c",
 					},
 				},
 			},
-			output: `{"bookmarks": [{"name":"a", "path":"b", "invocations":3},{"name":"b", "path":"c", "invocations":4}]}`,
+			output: `{"bookmarks": [{"name":"a", "path":"b"},{"name":"b", "path":"c"}]}`,
 			err:    nil,
 		},
 	}
@@ -247,11 +234,11 @@ func TestUpdate(t *testing.T) {
 		{
 			name: "update existing element with new values",
 			beforeBookmarks: Bookmarks{
-				[]Bookmark{{Name: "a", Path: "b", Invocations: 3}},
+				[]Bookmark{{Name: "a", Path: "b"}},
 			},
-			updateBookmark: Bookmark{Name: "a", Path: "c", Invocations: 9},
+			updateBookmark: Bookmark{Name: "a", Path: "c"},
 			afterBookmarks: Bookmarks{
-				[]Bookmark{{Name: "a", Path: "c", Invocations: 9}},
+				[]Bookmark{{Name: "a", Path: "c"}},
 			},
 			err: false,
 		},
@@ -259,14 +246,14 @@ func TestUpdate(t *testing.T) {
 			name: "update existing element with new values, case insensitive",
 			beforeBookmarks: Bookmarks{
 				[]Bookmark{
-					{Name: "a", Path: "b", Invocations: 3},
+					{Name: "a", Path: "b"},
 				},
 			},
 			updateBookmark: Bookmark{
-				Name: "A", Path: "c", Invocations: 9},
+				Name: "A", Path: "c"},
 			afterBookmarks: Bookmarks{
 				[]Bookmark{
-					{Name: "a", Path: "c", Invocations: 9},
+					{Name: "a", Path: "c"},
 				},
 			},
 			err: false,
@@ -275,13 +262,13 @@ func TestUpdate(t *testing.T) {
 			name: "error on non-existing name",
 			beforeBookmarks: Bookmarks{
 				[]Bookmark{
-					{Name: "a", Path: "b", Invocations: 3},
+					{Name: "a", Path: "b"},
 				},
 			},
-			updateBookmark: Bookmark{Name: "f", Path: "f", Invocations: 12},
+			updateBookmark: Bookmark{Name: "f", Path: "f"},
 			afterBookmarks: Bookmarks{
 				[]Bookmark{
-					{Name: "a", Path: "b", Invocations: 3},
+					{Name: "a", Path: "b"},
 				},
 			},
 			err: true,
@@ -327,10 +314,10 @@ func TestRemove(t *testing.T) {
 		{
 			name: "deleting non-existing name leads to error",
 			beforeBookmarks: Bookmarks{
-				[]Bookmark{{Name: "a", Path: "b", Invocations: 5}},
+				[]Bookmark{{Name: "a", Path: "b"}},
 			},
 			afterBookmarks: Bookmarks{
-				[]Bookmark{{Name: "a", Path: "b", Invocations: 5}},
+				[]Bookmark{{Name: "a", Path: "b"}},
 			},
 			deleteBookmark: Bookmark{Name: "f"},
 			err:            true,
@@ -339,20 +326,20 @@ func TestRemove(t *testing.T) {
 			name:            "deletion of empty set leads to error",
 			beforeBookmarks: Bookmarks{},
 			afterBookmarks:  Bookmarks{},
-			deleteBookmark:  Bookmark{Name: "a", Path: "b", Invocations: 3},
+			deleteBookmark:  Bookmark{Name: "a", Path: "b"},
 			err:             true,
 		},
 		{
 			name: "delete element",
 			beforeBookmarks: Bookmarks{
 				[]Bookmark{
-					{Name: "a", Path: "b", Invocations: 5},
-					{Name: "f", Path: "f", Invocations: 12},
+					{Name: "a", Path: "b"},
+					{Name: "f", Path: "f"},
 				},
 			},
 			afterBookmarks: Bookmarks{
 				[]Bookmark{
-					{Name: "a", Path: "b", Invocations: 5},
+					{Name: "a", Path: "b"},
 				},
 			},
 			deleteBookmark: Bookmark{Name: "f"},
@@ -376,7 +363,7 @@ func TestRemove(t *testing.T) {
 // helper struct for TestSearch
 type staticElementReturnFinder struct{}
 
-var staticElement Bookmark = Bookmark{Name: "static", Path: "element", Invocations: 4}
+var staticElement Bookmark = Bookmark{Name: "static", Path: "element"}
 
 // helper funct for TestSearch
 func (f staticElementReturnFinder) Find(name string, b Bookmarks) ([]Bookmark, error) {

@@ -1,0 +1,54 @@
+package cmd
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/mrjerz/bookmarks/model"
+	"github.com/spf13/cobra"
+)
+
+func init() {
+	rootCmd.AddCommand(addCmd)
+}
+
+var addCmd = &cobra.Command{
+	Use:   "add name path",
+	Short: "Add a new bookmark to the bookmark list",
+	Args:  cobra.RangeArgs(2, 2),
+	Run: func(cmd *cobra.Command, args []string) {
+		readfile, err := os.OpenFile("/Users/jerzy/.bookmarks", os.O_RDWR|os.O_CREATE, 0755)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+			os.Exit(1)
+		}
+		defer readfile.Close()
+		bms, err = model.Load(readfile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+			os.Exit(1)
+		}
+
+		b := model.Bookmark{
+			Name: args[0],
+			Path: args[1],
+		}
+
+		if err := bms.Add(b); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+			os.Exit(1)
+		}
+
+		writefile, err := os.OpenFile("/Users/jerzy/.bookmarks", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+			os.Exit(1)
+		}
+		defer writefile.Close()
+
+		if err := bms.Save(writefile); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+			os.Exit(1)
+		}
+	},
+}

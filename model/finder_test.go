@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"reflect"
@@ -33,27 +33,23 @@ func TestFirstExactMatchFinder(t *testing.T) {
 			bookmarks: Bookmarks{
 				[]Bookmark{
 					{
-						Name:        "a",
-						Path:        "b",
-						Invocations: 4,
+						Name: "a",
+						Path: "b",
 					},
 					{
-						Name:        "b",
-						Path:        "c",
-						Invocations: 5,
+						Name: "b",
+						Path: "c",
 					},
 					{
-						Name:        "c",
-						Path:        "d",
-						Invocations: 6,
+						Name: "c",
+						Path: "d",
 					},
 				},
 			},
 			expectedResult: []Bookmark{
 				{
-					Name:        "b",
-					Path:        "c",
-					Invocations: 5,
+					Name: "b",
+					Path: "c",
 				},
 			},
 			search: "b",
