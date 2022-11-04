@@ -61,7 +61,7 @@ Make the bookmark tool easier to use with zsh aliases
 
 ```bash
 g() { cd `bookmarks get $1` }
-a() { cd `bookmarks add $1 $2` }
-u() { cd `bookmarks update $1 $2` }
+alias r ='bookmarks add'
+alias r ='bookmarks update'
 alias r ='bookmarks remove'
 ```
