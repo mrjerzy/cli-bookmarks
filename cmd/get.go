@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/mrjerz/bookmarks/config"
 	"github.com/mrjerz/bookmarks/model"
 	"github.com/spf13/cobra"
 )
@@ -17,24 +19,16 @@ var getCmd = &cobra.Command{
 	Short: "retrieve path for a given bookmark",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		file, err := os.OpenFile("/Users/jerzy/.bookmarks", os.O_RDWR|os.O_CREATE, 0755)
+		path, _ := config.StdConfigPath()
+		bms, err := config.Read(path)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-			os.Exit(1)
-		}
-		defer file.Close()
-
-		bms, err = model.Load(file)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-			os.Exit(1)
+			log.Fatalf("Error: %s", err)
 		}
 
 		var f model.FirstExactMatchFinder
 		bm, err := bms.Get(args[0], f)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-			os.Exit(1)
+			log.Fatalf("Error: %s\n", err)
 		}
 
 		fmt.Fprintf(os.Stdout, "%s", bm.Path)

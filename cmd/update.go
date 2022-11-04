@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/mrjerz/bookmarks/config"
 	"github.com/mrjerz/bookmarks/model"
 	"github.com/spf13/cobra"
 )
@@ -17,16 +19,10 @@ var updateCmd = &cobra.Command{
 	Short: "Updates a bookmark in the bookmark list",
 	Args:  cobra.RangeArgs(2, 2),
 	Run: func(cmd *cobra.Command, args []string) {
-		readfile, err := os.OpenFile("/Users/jerzy/.bookmarks", os.O_RDWR|os.O_CREATE, 0755)
+		path, _ := config.StdConfigPath()
+		bms, err := config.Read(path)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-			os.Exit(1)
-		}
-		defer readfile.Close()
-		bms, err = model.Load(readfile)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-			os.Exit(1)
+			log.Fatalf("Error: %s", err)
 		}
 
 		b := model.Bookmark{
@@ -39,14 +35,7 @@ var updateCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		writefile, err := os.OpenFile("/Users/jerzy/.bookmarks", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-			os.Exit(1)
-		}
-		defer writefile.Close()
-
-		if err := bms.Save(writefile); err != nil {
+		if err := config.Write(path, bms); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %s\n", err)
 			os.Exit(1)
 		}

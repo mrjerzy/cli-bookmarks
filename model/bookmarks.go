@@ -93,7 +93,7 @@ func (b Bookmarks) Get(name string, finder Finder) (Bookmark, error) {
 func Load(r io.Reader) (Bookmarks, error) {
 	content, err := ioutil.ReadAll(r)
 	if err != nil {
-		return Bookmarks{}, err
+		return Bookmarks{}, fmt.Errorf("load: could not load content: %s", err)
 	}
 
 	if bytes.Equal(content, []byte("")) {
@@ -103,7 +103,7 @@ func Load(r io.Reader) (Bookmarks, error) {
 	var b Bookmarks
 	err = json.Unmarshal(content, &b)
 	if err != nil {
-		return Bookmarks{}, err
+		return Bookmarks{}, fmt.Errorf("load: could not unmarshall JSON content: %s", err)
 	}
 	return b, nil
 }
@@ -111,8 +111,11 @@ func Load(r io.Reader) (Bookmarks, error) {
 func (b Bookmarks) Save(w io.Writer) error {
 	j, err := json.MarshalIndent(b, "", "  ")
 	if err != nil {
-		return err
+		return fmt.Errorf("Save: failed to marshall JSON during save: %s", err)
 	}
-	w.Write(j)
+	_, err = w.Write(j)
+	if err != nil {
+		return fmt.Errorf("Save: could not write back: %s", err)
+	}
 	return nil
 }

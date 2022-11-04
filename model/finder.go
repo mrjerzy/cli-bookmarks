@@ -10,8 +10,8 @@ type Finder interface {
 	Find(name string, b Bookmarks) ([]Bookmark, error)
 }
 
-// FirstExactMatchFinder finds the first exact match in the bookmarks
-// If no exact match could be made, the Finder returns an error
+// FirstExactMatchFinder finds the first exact match in the bookmarks.
+// If no exact match could be made, the Finder returns an error.
 type FirstExactMatchFinder struct {
 }
 
